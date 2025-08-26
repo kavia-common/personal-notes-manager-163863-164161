@@ -65,24 +65,58 @@ function App() {
   }
 
   async function handleCreate() {
-    try {
-      const newNote = await createNote({ title: 'Untitled', content: '' });
-      setNotes((prev) => [newNote, ...prev]);
-      setSelectedId(newNote.id);
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.error('Failed to create note:', e?.message || e);
-      alert('Failed to create note. Please ensure Supabase credentials are set and table exists.');
+    // When creating a new note:
+    // - If Supabase is configured, we try to create on the server and then select it.
+    // - If Supabase is not configured or the server creation fails, we create a local draft
+    //   (without id) and select it so the editor opens and allows a later save.
+    const supaConfiguredNow = Boolean(
+      process.env.REACT_APP_SUPABASE_URL && process.env.REACT_APP_SUPABASE_KEY
+    );
+
+    if (supaConfiguredNow) {
+      try {
+        const newNote = await createNote({ title: 'Untitled', content: '' });
+        setNotes((prev) => [newNote, ...prev]);
+        setSelectedId(newNote.id);
+        return;
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('Failed to create note on server, falling back to local draft:', e?.message || e);
+      }
     }
+
+    // Fallback: create a local draft note (no id). This allows the editor to open and user can save later.
+    const localDraft = {
+      // no id indicates a new unsaved note; NoteEditor already uses this to show "Create" button
+      title: 'Untitled',
+      content: ''
+    };
+
+    // Prepend draft to list so it appears in the notes list with no id key. We use a temporary key-like field.
+    // To avoid React key issues, do not insert into the list without stable id; instead just select a "virtual" note.
+    // We will set selectedId to null and pass the draft directly to the editor via editorNote below.
+    // For that we need to store the draft in state; simplest is to store as a special transient note slot.
+    // However to keep minimal changes, we can mark selectedId as null and store draft in a separate state.
+
+    // Minimal-change approach: temporarily set a synthetic id in memory for UI selection, but not persisted.
+    const draftId = `draft-${Date.now()}`;
+    const draftForList = { ...localDraft, id: draftId, updated_at: new Date().toISOString() };
+    setNotes((prev) => [draftForList, ...prev]);
+    setSelectedId(draftId);
   }
 
   async function handleSave(payload) {
     if (!selectedNote) return;
-    const isNew = !selectedNote.id;
+    const isNew = !selectedNote.id || String(selectedNote.id).startsWith('draft-');
     try {
       if (isNew) {
+        // Create on server and replace any draft entry in the list.
         const created = await createNote(payload);
-        setNotes((prev) => [created, ...prev]);
+        setNotes((prev) => {
+          // Remove draft with matching selectedId if present
+          const filtered = prev.filter((n) => String(n.id) !== String(selectedId));
+          return [created, ...filtered];
+        });
         setSelectedId(created.id);
       } else {
         const updated = await updateNote(selectedNote.id, payload);
