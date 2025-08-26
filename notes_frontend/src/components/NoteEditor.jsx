@@ -15,6 +15,8 @@ export default function NoteEditor({ note, onSave, onDelete }) {
     setContent(note?.content || '');
   }, [note]);
 
+  const disabled = title.trim().length === 0;
+
   return (
     <section className="editor">
       {note ? (
@@ -41,6 +43,8 @@ export default function NoteEditor({ note, onSave, onDelete }) {
                 className="btn primary"
                 onClick={() => onSave({ title: title.trim(), content })}
                 aria-label="Save note"
+                disabled={disabled}
+                title={disabled ? 'Title is required to save' : undefined}
               >
                 {isNew ? 'Create' : 'Save'}
               </button>

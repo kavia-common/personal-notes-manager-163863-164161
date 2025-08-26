@@ -107,13 +107,16 @@ function App() {
 
   async function handleSave(payload) {
     if (!selectedNote) return;
-    const isNew = !selectedNote.id || String(selectedNote.id).startsWith('draft-');
+    const idStr = String(selectedNote.id || '');
+    const isLocal = idStr.startsWith('local-');
+    const isDraft = idStr.startsWith('draft-');
+    const isNew = !selectedNote.id || isDraft || isLocal;
+
     try {
       if (isNew) {
-        // Create on server and replace any draft entry in the list.
+        // Create and replace any draft/local entry in the list.
         const created = await createNote(payload);
         setNotes((prev) => {
-          // Remove draft with matching selectedId if present
           const filtered = prev.filter((n) => String(n.id) !== String(selectedId));
           return [created, ...filtered];
         });
@@ -132,7 +135,9 @@ function App() {
     } catch (e) {
       // eslint-disable-next-line no-console
       console.error('Failed to save note:', e?.message || e);
-      alert('Failed to save note. Please check your Supabase configuration.');
+      alert(
+        'Failed to save note. If Supabase is disconnected, a local copy is saved. Otherwise, please verify your Supabase URL and Key.'
+      );
     }
   }
 
