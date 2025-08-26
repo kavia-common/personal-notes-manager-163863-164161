@@ -1,0 +1,260 @@
+:root {
+  --primary: #1976d2;
+  --secondary: #424242;
+  --accent: #ffb300;
+
+  --bg: #ffffff;
+  --bg-soft: #f7f9fc;
+  --text: #1a1a1a;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+
+  --success: #16a34a;
+  --danger: #dc2626;
+}
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.header {
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, #ffffff, #fafafa);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 12px 20px;
+  gap: 12px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand .logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 800;
+}
+
+.brand .title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--secondary);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn {
+  appearance: none;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--secondary);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .05s ease, box-shadow .2s ease, background .2s ease, color .2s ease, border-color .2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+
+.btn.primary {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.btn.primary.outline {
+  background: transparent;
+  color: var(--primary);
+}
+
+.btn.danger {
+  background: var(--danger);
+  color: #fff;
+  border-color: var(--danger);
+}
+
+.btn.danger.outline {
+  background: transparent;
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 0;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+}
+
+.notes-list {
+  border-right: 1px solid var(--border);
+  background: var(--bg-soft);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.list-header {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+  background: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.search {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  font-size: 14px;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+}
+
+.item {
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "title time"
+    "snippet time";
+  gap: 4px 8px;
+  cursor: pointer;
+  background: transparent;
+}
+
+.item:hover {
+  background: #fff;
+}
+
+.item.active {
+  background: #eef6ff;
+}
+
+.item .title {
+  grid-area: title;
+  font-weight: 700;
+  color: var(--secondary);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.item .snippet {
+  grid-area: snippet;
+  color: var(--muted);
+  font-size: 13px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.item .time {
+  grid-area: time;
+  color: var(--muted);
+  font-size: 12px;
+  align-self: start;
+}
+
+.empty {
+  padding: 20px;
+  color: var(--muted);
+}
+
+.editor {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 60px);
+}
+
+.editor-header {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  background: #fff;
+}
+
+.title-input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.content-input {
+  flex: 1;
+  border: none;
+  padding: 16px;
+  font-size: 14px;
+  line-height: 1.6;
+  resize: none;
+  outline: none;
+  min-height: 0;
+}
+
+.empty-editor {
+  padding: 24px;
+  color: var(--muted);
+}
+
+/* Responsive */
+@media (max-width: 960px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+  .notes-list {
+    height: 40vh;
+  }
+  .editor {
+    height: auto;
+  }
+}

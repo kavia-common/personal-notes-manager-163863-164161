@@ -1,82 +1,61 @@
-# Lightweight React Template for KAVIA
+# Personal Notes - React Frontend
 
-This project provides a minimal React template with a clean, modern UI and minimal dependencies.
+A modern, responsive notes application where users can create, edit, delete, and list notes. Data is persisted using Supabase.
 
 ## Features
 
-- **Lightweight**: No heavy UI frameworks - uses only vanilla CSS and React
-- **Modern UI**: Clean, responsive design with KAVIA brand styling
-- **Fast**: Minimal dependencies for quick loading times
-- **Simple**: Easy to understand and modify
+- Add, edit, delete notes
+- List view with search
+- Responsive layout: list on the left, editor on the right
+- Modern light theme with primary/secondary/accent colors
+- No UI framework dependency, pure CSS
+- Supabase integration using environment variables
 
-## Getting Started
+## Environment Variables
 
-In the project directory, you can run:
+Create a `.env` file in the root of the `notes_frontend` folder with:
 
-### `npm start`
-
-Runs the app in development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-### `npm test`
-
-Launches the test runner in interactive watch mode.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-## Customization
-
-### Colors
-
-The main brand colors are defined as CSS variables in `src/App.css`:
-
-```css
-:root {
-  --kavia-orange: #E87A41;
-  --kavia-dark: #1A1A1A;
-  --text-color: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.7);
-  --border-color: rgba(255, 255, 255, 0.1);
-}
+```
+REACT_APP_SUPABASE_URL=<your-supabase-url>
+REACT_APP_SUPABASE_KEY=<your-supabase-anon-public-key>
 ```
 
-### Components
+Do not commit secrets. The app will show "Disconnected" if these are not set.
 
-This template uses pure HTML/CSS components instead of a UI framework. You can find component styles in `src/App.css`. 
+You can also review `.env.example` for a template.
 
-Common components include:
-- Buttons (`.btn`, `.btn-large`)
-- Container (`.container`)
-- Navigation (`.navbar`)
-- Typography (`.title`, `.subtitle`, `.description`)
+## Supabase Setup
 
-## Learn More
+Create a project in Supabase and add a "notes" table:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- id: uuid (primary key, default value: uuid_generate_v4())
+- title: text
+- content: text
+- updated_at: timestamp with time zone (default: now())
 
-### Code Splitting
+Recommended RLS:
+- Enable RLS and add policies as needed for your app. For a simple public demo, you may disable RLS (not recommended for production).
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Scripts
 
-### Analyzing the Bundle Size
+- `npm start` - start development server
+- `npm test` - run tests
+- `npm run build` - build for production
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## Folder Structure
 
-### Making a Progressive Web App
+- `src/components/NotesList.jsx` - list and search UI
+- `src/components/NoteEditor.jsx` - editor UI
+- `src/services/notesService.js` - Supabase CRUD helpers
+- `src/supabaseClient.js` - Supabase client initialization
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Design
 
-### Advanced Configuration
+The app follows a light theme and the following palette:
+- Primary: #1976d2
+- Secondary: #424242
+- Accent: #ffb300
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Layout:
+- Header with brand and status
+- Two-pane main area with list and editor
